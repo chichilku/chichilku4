@@ -54,6 +54,7 @@ function love.update(dt)
   for k, v in pairs(T_OBJS)
   do
     v:onTick(dt)
+    player:collide(v)
   end
   T_OBJS[0] = player
 end
@@ -74,4 +75,3 @@ function love.keypressed( key, isrepeat )
     love.window.setMode(800, 600, {fullscreen=cfg.isFullscreen})
   end
 end
-

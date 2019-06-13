@@ -8,12 +8,15 @@ function CTile:init(x, y)
   base.dbg("create new tile at x=" .. x .. " y=" .. y)
   self.x = x
   self.y = y
+  self.last_x = x -- doesn't change but used for collison
+  self.last_y = y -- doesn't change but used for collison
+  self.w = render:p2u(world.TILE_SIZE)
+  self.h = render:p2u(world.TILE_SIZE)
   self.id = CURRENT_ENTITY_ID
 end
 
 function CTile:render()
-  -- love.graphics.rectangle("fill", self.x * world.TILE_SIZE, self.y * world.TILE_SIZE, world.TILE_SIZE, world.TILE_SIZE);
-  render:relative(self.x, self.y, world.TILE_SIZE, world.TILE_SIZE);
+  render:relative(self.x, self.y, self.w, self.h);
 end
 
 function CTile:toString()

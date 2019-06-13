@@ -9,6 +9,7 @@ function CHud:renderDebug(player)
   then
     return
   end
+  love.graphics.setColor(255, 255, 255, 255)
   love.graphics.print("X: " .. player.x, 20, 20)
   love.graphics.print("Y: " .. player.y, 20, 40)
   love.graphics.print("DX: " .. player.dx, 20, 60)
@@ -26,4 +27,3 @@ function CHud:render(player)
 end
 
 return CHud
-

@@ -13,18 +13,21 @@ function CEntity:init(x, y)
   self.dy = 0
   self.dx = 0
   self.jumps = 0
-  self.w = 60 -- width
-  self.h = 60 -- height
+  self.w = render:p2u(60) -- width
+  self.h = render:p2u(60) -- height
   self.id = CURRENT_ENTITY_ID
 end
 
 function CEntity:render()
-  -- debug render last position
-  -- love.graphics.setColor( 255, 255, 2, 255 )
-  -- love.graphics.rectangle("fill", self.last_x * world.TILE_SIZE, self.last_y * world.TILE_SIZE, self.w, self.h);
-  love.graphics.setColor( 255, 255, 255, 255 )
-  -- love.graphics.rectangle("fill", self.x * world.TILE_SIZE, self.y * world.TILE_SIZE, self.w, self.h);
-  render:relative(self.x, self.y, self.w, self.h);
+  love.graphics.setColor(255, 255, 255, 255)
+  render:relative(self.x, self.y, self.w, self.h)
+  if (cfg.isDebug)
+  then
+    -- ids
+    render:relativeTxt("E=" .. self.id, self.x + (self.w * 0.01) / 2, self.y - (self.h * 0.01))
+    -- hitbox
+    render:hitbox(self.x, self.y, self.w, self.h)
+  end
 end
 
 function CEntity:doJump()
@@ -38,6 +41,70 @@ end
 
 function CEntity:toString()
   return "[<CEntity> id=" .. self.id .. " x=" .. self.x .. " y=" .. self.y .. "]"
+end
+
+function CEntity:collideXY(pos1, size1, pos2, size2)
+  if (pos1 + size1 > pos2)
+  then
+    if (pos1 < pos2 + size2)
+    then
+      return true
+    end
+  end
+  return false
+end
+
+function CEntity:collideX(other)
+  sx = self.x
+  sw = self.w
+  ox = other.x
+  ow = other.w
+  return self:collideXY(sx, sw, ox, ow)
+end
+
+function CEntity:collideY(other)
+  sy = self.y
+  sh = self.h
+  oy = other.y
+  oh = other.h
+  return self:collideXY(sy, sh, oy, oh)
+end
+
+function CEntity:collide(other)
+  if other.id == self.id
+  then
+    return
+  end
+  if self:collideX(other) and self:collideY(other)
+  then
+    -- base.dbg("colliding with other=" .. other:toString())
+    -- calculate centers
+    scx = self.last_x + (self.w / 2)
+    ocx = other.last_x + (other.w / 2)
+    scy = self.last_y + (self.h / 2)
+    ocy = other.last_y + (other.h / 2)
+    if scx < ocx
+    then
+      self.dx = 0
+      self.x = other.x - self.w
+      base.dbg("collide with right side")
+    elseif scx > ocx
+    then
+      self.dx = 0
+      self.x = other.x + other.w
+      base.dbg("collide with left side")
+    elseif scy > ocy
+    then
+      self.dy = 0
+      self.y = other.y + other.h
+      base.dbg("collide with left side")
+    elseif scy > ocy
+    then
+      self.dy = 0
+      self.y = other.y + other.h
+      base.dbg("collide with left side")
+    end
+  end
 end
 
 function CEntity:onTick(dt)
@@ -55,10 +122,9 @@ function CEntity:gravity(dt)
   self.y = self.y + self.dy
   if (self.y > 10) -- collide with floor
   then
-    self.y = self.y - self.dy
+    self.y = 10
     self.jumps = 2
   end
 end
 
 return CEntity
-
