@@ -36,6 +36,7 @@ function love.load()
   addEntitie(CEntity(5,4)) -- random falling thing
   addEntitie(CTile(2,2))
   addEntitie(CTile(3,3))
+  r = 0
 end
 
 function love.draw()
@@ -45,6 +46,16 @@ function love.draw()
   render:relative(-10, 11, 30 * world.TILE_SIZE, 1 * world.TILE_SIZE)
   render:renderObjs()
   hud:render(player)
+  if (TICKS % 10 == 0)
+  then
+    r = r + 1
+  end
+  if (r > 360)
+  then
+    r = 0
+  end
+  base.dbg("r=" .. r)
+  render:poly(200, 200, 100, 100, r)
 end
 
 function love.update(dt)

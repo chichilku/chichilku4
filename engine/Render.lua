@@ -40,6 +40,48 @@ function CRender:relative(x, y, w ,h)
   -- base.dbg("rect X=" .. self:getScrollX(x) .. " Y=" .. self:getScrollY(y) .. " size=" .. w .. "x" .. h)
 end
 
+function CRender:polyRelative(x, y, w, h, r)
+  x = self:getScrollX(x)
+  y = self:getScrollY(y)
+  w = self:u2p(w)
+  h = self:u2p(h)
+  self:poly(x, y, w, h, r)
+end
+
+function CRender:poly(x, y, w, h, r)
+  r = math.rad(r)
+  cos = math.cos(r)
+  sin = math.sin(r)
+  -- rotate around the center
+  cx = x + (w / 2)
+  cy = y + (h / 2)
+  -- translate point to origin
+  x = x - cx
+  y = y - cy
+  love.graphics.setColor(255, 10, 200, 225)
+  love.graphics.rectangle("fill", cx - 5, cy - 5, 10, 10)
+  love.graphics.setColor(255, 10, 10, 225)
+  love.graphics.line(cx, cy, x, y)
+  -- rotate
+  x = x * cos - y * sin
+  y = y * cos + x * sin
+  -- translate back
+  x = x + cx
+  y = y + cx
+  love.graphics.setColor(200, 100, 10, 220)
+  love.graphics.polygon('fill',
+    x, y,
+    x + w, y,
+    x, y + h
+  )
+  love.graphics.polygon('fill',
+    x + w, y + h,
+    x + w, y,
+    x, y + h
+  )
+  love.graphics.setColor(1, 1, 1, 255)
+end
+
 function CRender:relativeTxt(text, x, y)
   love.graphics.print(text, self:getScrollX(x), self:getScrollY(y))
 end

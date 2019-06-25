@@ -27,6 +27,8 @@ function CEntity:render()
     render:relativeTxt("E=" .. self.id, self.x + (self.w * 0.01) / 2, self.y - (self.h * 0.01))
     -- hitbox
     render:hitbox(self.x, self.y, self.w, self.h)
+    -- poly
+    -- render:polyRelative(self.x, self.y, self.w, self.h, 0)
   end
 end
 
